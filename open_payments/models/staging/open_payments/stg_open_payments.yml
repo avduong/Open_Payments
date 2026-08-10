@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_open_payments
+    description: "Staged 2025 CMS Open Payments General Payments data."
+
+    columns:
+      - name: record_id
+        description: "Unique identifier assigned to the Open Payments record."
+        tests:
+          - not_null
+          - unique
+
+      - name: program_year
+        description: "Open Payments reporting year."
+        tests:
+          - not_null
+
+      - name: payment_date
+        description: "Date the payment or transfer of value occurred."
+        tests:
+          - not_null
+
+      - name: payment_amount_usd
+        description: "Total amount of the payment in US dollars."
+        tests:
+          - not_null

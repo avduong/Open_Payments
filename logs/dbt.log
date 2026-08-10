@@ -1,0 +1,151 @@
+[0m16:42:06.986228 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002D2F9244D70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002D2F6B2D1D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002D2FBA879D0>]}
+
+
+============================== 16:42:07.069456 | 91d5b702-3a21-4b3e-97b0-464f6378749e ==============================
+[0m16:42:07.069456 [info ] [MainThread]: Running with dbt=1.12.0
+[0m16:42:07.070488 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'version_check': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'profiles_dir': 'C:\\Users\\Nightwing\\.dbt', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'use_colors': 'True', 'hints_enabled': 'True', 'invocation_command': 'dbt init open_payments', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'log_path': 'logs'}
+[0m16:42:07.086086 [info ] [MainThread]: Creating dbt configuration folder at C:\Users\Nightwing\.dbt
+[0m16:42:07.087768 [debug] [MainThread]: Starter project path: C:\Users\Nightwing\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\dbt\include\starter_project
+[0m16:42:07.121913 [info ] [MainThread]: Setting up your profile.
+[0m16:45:18.136474 [info ] [MainThread]: Profile open_payments written to C:\Users\Nightwing\.dbt\profiles.yml using target's profile_template.yml and your supplied values.
+[0m16:45:18.138368 [info ] [MainThread]: Running dbt debug to validate the project...
+[0m16:45:18.138962 [info ] [MainThread]: dbt version: 1.12.0
+[0m16:45:18.139363 [info ] [MainThread]: python version: 3.14.3
+[0m16:45:18.139763 [info ] [MainThread]: python path: C:\Users\Nightwing\AppData\Local\Python\pythoncore-3.14-64\python.exe
+[0m16:45:18.140189 [info ] [MainThread]: os info: Windows-10-10.0.19045-SP0
+[0m16:45:18.181095 [info ] [MainThread]: Using profiles dir at C:\Users\Nightwing\.dbt
+[0m16:45:18.181592 [info ] [MainThread]: Using profiles.yml file at C:\Users\Nightwing\.dbt\profiles.yml
+[0m16:45:18.181946 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Nightwing\Desktop\open_payments_dbt\open_payments\dbt_project.yml
+[0m16:45:18.182690 [info ] [MainThread]: adapter type: postgres
+[0m16:45:18.183016 [info ] [MainThread]: adapter version: 1.11.0
+[0m16:45:18.278224 [info ] [MainThread]: Configuration:
+[0m16:45:18.278720 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m16:45:18.279096 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m16:45:18.279432 [info ] [MainThread]: Required dependencies:
+[0m16:45:18.279773 [debug] [MainThread]: Executing "git --help"
+[0m16:45:19.683286 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Reset current HEAD to the specified state\n   switch     Switch branches\n   tag        Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m16:45:19.708028 [debug] [MainThread]: STDERR: "b''"
+[0m16:45:19.708412 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m16:45:19.708998 [info ] [MainThread]: Connection:
+[0m16:45:19.709513 [info ] [MainThread]:   host: localhost
+[0m16:45:19.710001 [info ] [MainThread]:   port: 5432
+[0m16:45:19.710481 [info ] [MainThread]:   user: postgres
+[0m16:45:19.710960 [info ] [MainThread]:   database: payment_db
+[0m16:45:19.711437 [info ] [MainThread]:   schema: public
+[0m16:45:19.711917 [info ] [MainThread]:   connect_timeout: 10
+[0m16:45:19.712396 [info ] [MainThread]:   role: None
+[0m16:45:19.712876 [info ] [MainThread]:   search_path: None
+[0m16:45:19.713353 [info ] [MainThread]:   keepalives_idle: 0
+[0m16:45:19.713831 [info ] [MainThread]:   sslmode: None
+[0m16:45:19.714305 [info ] [MainThread]:   sslcert: None
+[0m16:45:19.714981 [info ] [MainThread]:   sslkey: None
+[0m16:45:19.715593 [info ] [MainThread]:   sslrootcert: None
+[0m16:45:19.716131 [info ] [MainThread]:   application_name: dbt
+[0m16:45:19.716626 [info ] [MainThread]:   autocommit: False
+[0m16:45:19.717104 [info ] [MainThread]:   retries: 1
+[0m16:45:19.717848 [info ] [MainThread]: Registered adapter: postgres=1.11.0
+[0m16:45:19.994248 [debug] [MainThread]: Acquiring new postgres connection 'debug'
+[0m16:45:20.115012 [debug] [MainThread]: Using postgres connection "debug"
+[0m16:45:20.115371 [debug] [MainThread]: On debug: select 1 as id
+[0m16:45:20.115630 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m16:45:20.148672 [debug] [MainThread]: SQL status: SELECT 1 in 0.033 seconds
+[0m16:45:20.149552 [debug] [MainThread]: On debug: Close
+[0m16:45:20.149867 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m16:45:20.150392 [info ] [MainThread]: [32mAll checks passed![0m
+[0m16:45:20.150828 [info ] [MainThread]: Your new dbt project "open_payments" was created!
+Initialized new project in C:\Users\Nightwing\Desktop\open_payments_dbt\open_payments\open_payments
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m16:45:20.152244 [debug] [MainThread]: Command `dbt init` succeeded at 16:45:20.152093 after 193.31 seconds
+[0m16:45:20.152555 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m16:45:20.152862 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002D2FBAF88A0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002D2FBDFD7F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002D2F9DAA580>]}
+[0m16:45:20.153271 [debug] [MainThread]: Flushing usage events
+[0m16:45:20.760737 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m16:45:49.598676 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000024A12414D70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000024A0FD0D1D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000024A14C579D0>]}
+
+
+============================== 16:45:49.602411 | 00eee00e-e2b9-4c7f-bc1f-997a4999a406 ==============================
+[0m16:45:49.602411 [info ] [MainThread]: Running with dbt=1.12.0
+[0m16:45:49.603092 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'version_check': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'static_parser': 'True', 'printer_width': '80', 'write_json': 'True', 'empty': 'None', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': 'C:\\Users\\Nightwing\\.dbt', 'use_colors': 'True', 'hints_enabled': 'True', 'invocation_command': 'dbt debug', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'log_path': 'logs'}
+[0m16:45:49.615315 [info ] [MainThread]: dbt version: 1.12.0
+[0m16:45:49.615784 [info ] [MainThread]: python version: 3.14.3
+[0m16:45:49.616149 [info ] [MainThread]: python path: C:\Users\Nightwing\AppData\Local\Python\pythoncore-3.14-64\python.exe
+[0m16:45:49.616519 [info ] [MainThread]: os info: Windows-10-10.0.19045-SP0
+[0m16:45:49.658633 [info ] [MainThread]: Using profiles dir at C:\Users\Nightwing\.dbt
+[0m16:45:49.659152 [info ] [MainThread]: Using profiles.yml file at C:\Users\Nightwing\.dbt\profiles.yml
+[0m16:45:49.659501 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Nightwing\Desktop\open_payments_dbt\dbt_project.yml
+[0m16:45:49.660254 [info ] [MainThread]: adapter type: postgres
+[0m16:45:49.660656 [info ] [MainThread]: adapter version: 1.11.0
+[0m16:45:49.661032 [info ] [MainThread]: Configuration:
+[0m16:45:49.661354 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m16:45:49.661689 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m16:45:49.662019 [info ] [MainThread]: Required dependencies:
+[0m16:45:49.662353 [debug] [MainThread]: Executing "git --help"
+[0m16:45:49.677514 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Reset current HEAD to the specified state\n   switch     Switch branches\n   tag        Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m16:45:49.678013 [debug] [MainThread]: STDERR: "b''"
+[0m16:45:49.678292 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m16:45:49.678760 [info ] [MainThread]: Connection:
+[0m16:45:49.679319 [info ] [MainThread]:   host: localhost
+[0m16:45:49.679688 [info ] [MainThread]:   port: 5432
+[0m16:45:49.680005 [info ] [MainThread]:   user: postgres
+[0m16:45:49.680315 [info ] [MainThread]:   database: payment_db
+[0m16:45:49.680626 [info ] [MainThread]:   schema: public
+[0m16:45:49.680934 [info ] [MainThread]:   connect_timeout: 10
+[0m16:45:49.681251 [info ] [MainThread]:   role: None
+[0m16:45:49.681558 [info ] [MainThread]:   search_path: None
+[0m16:45:49.681865 [info ] [MainThread]:   keepalives_idle: 0
+[0m16:45:49.682172 [info ] [MainThread]:   sslmode: None
+[0m16:45:49.682476 [info ] [MainThread]:   sslcert: None
+[0m16:45:49.682783 [info ] [MainThread]:   sslkey: None
+[0m16:45:49.683087 [info ] [MainThread]:   sslrootcert: None
+[0m16:45:49.683402 [info ] [MainThread]:   application_name: dbt
+[0m16:45:49.683710 [info ] [MainThread]:   autocommit: False
+[0m16:45:49.684016 [info ] [MainThread]:   retries: 1
+[0m16:45:49.684529 [info ] [MainThread]: Registered adapter: postgres=1.11.0
+[0m16:45:49.888302 [debug] [MainThread]: Acquiring new postgres connection 'debug'
+[0m16:45:49.939204 [debug] [MainThread]: Using postgres connection "debug"
+[0m16:45:49.939571 [debug] [MainThread]: On debug: select 1 as id
+[0m16:45:49.939826 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m16:45:50.084595 [debug] [MainThread]: SQL status: SELECT 1 in 0.145 seconds
+[0m16:45:50.085722 [debug] [MainThread]: On debug: Close
+[0m16:45:50.086153 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m16:45:50.086807 [info ] [MainThread]: [31m1 check failed:[0m
+[0m16:45:50.087534 [info ] [MainThread]: Project loading failed for the following reason:
+ project path <C:\Users\Nightwing\Desktop\open_payments_dbt\dbt_project.yml> not found
+
+[0m16:45:50.088698 [debug] [MainThread]: Command `dbt debug` failed at 16:45:50.088568 after 0.63 seconds
+[0m16:45:50.089108 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m16:45:50.089522 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000024A14D6A060>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000024A14D179B0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000024A14D8C6B0>]}
+[0m16:45:50.089996 [debug] [MainThread]: Flushing usage events
+[0m16:45:50.677684 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m18:24:57.262111 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000010D48E74D70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000010D4675D1D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000010D4B6B79D0>]}
+
+
+============================== 18:24:57.309545 | fdad0ffa-2360-4f09-b05b-2e7da89d574c ==============================
+[0m18:24:57.309545 [info ] [MainThread]: Running with dbt=1.12.0
+[0m18:24:57.310334 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'maximum_seed_size_mib': '1', 'printer_width': '80', 'write_json': 'True', 'empty': 'None', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': 'C:\\Users\\Nightwing\\.dbt', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt parse', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'logs'}
+[0m18:24:57.310890 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path C:\Users\Nightwing\Desktop\open_payments_dbt\dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m18:24:57.311832 [debug] [MainThread]: Command `dbt parse` failed at 18:24:57.311717 after 0.16 seconds
+[0m18:24:57.312207 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000010D4B7289D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000010D4B6ED250>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000010D4B748270>]}
+[0m18:24:57.312583 [debug] [MainThread]: Flushing usage events
+[0m18:24:57.831762 [debug] [MainThread]: An error was encountered while trying to flush usage events

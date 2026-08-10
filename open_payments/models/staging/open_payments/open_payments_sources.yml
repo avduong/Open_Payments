@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: open_payments
+    description: "Raw CMS Open Payments data loaded into PostgreSQL."
+    schema: public
+    tables:
+      - name: general_payment_2025
+        description: "2025 Open Payments general payment records."

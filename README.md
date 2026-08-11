@@ -100,46 +100,7 @@ This separation keeps the original data independent from transformations managed
 - 15 payments of >= $10,000,000
 - 1 payment of >= $100,000,000
 
-Repository Structure
-open_payments_dbt/
-│
-├── data/
-│   ├── raw/
-│   │   └── general_payment_data_2025.csv
-│   │
-│   └── raw_partitioned/
-│       ├── part_1.csv
-│       ├── part_2.csv
-│       └── ...
-│
-├── scripts/
-│   ├── load.py
-│   └── partition.py
-│
-├── open_payments/
-│   ├── dbt_project.yml
-│   │
-│   ├── analyses/
-|   |       profiling/
-              profile_open_payments.sql
-|   |          
-│   ├── macros/
-│   ├── models/
-│   │   ├── example/
-│   │   └staging/
-│   │       open_payments/
-│   │            open_payments.yml
-│   │            stg_open_payments.sql
 
-│   │
-│   ├── seeds/
-│   ├── snapshots/
-│   ├── tests/
-│   └── ...
-│
-├── logs/
-├── README.md
-└── ...
 Directory responsibilities
 data/
 

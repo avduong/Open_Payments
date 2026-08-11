@@ -72,12 +72,23 @@ dbt creates transformed models in the dbt_dev schema.
 
 This separation keeps the original data independent from transformations managed by dbt.
 
-## Data Profiling 
-- Row count: 16131856
-- `record_id`: 16131856 unique, 16131856 non-null
-- Average payment amount: 243.22
-- Payment amount range: 0.01-400000000
-- Payment forms: TBD
+### Data Profiling
+
+- Row count: 16,131,856
+- `record_id`: 16,131,856 unique, 16,131,856 non-null
+- Average payment amount: $243.22
+- Payment amount range: $0.01–$400,000,000
+- Payment forms:
+  - In-kind items and services: 13,911,080
+  - Cash or cash equivalent: 2,220,038
+  - Stock, stock option, or any other ownership interest: 287
+  - Dividend, profit or other return on investment: 262
+  - Stock option: 159
+  - Stock: 30
+- Recipient types:
+  - Covered Recipient Physician: 10,129,623
+  - Covered Recipient Non-Physician Practitioner: 5,966,664
+  - Covered Recipient Teaching Hospital: 35,569
 - Null patterns: TBD
 
 ### Observations

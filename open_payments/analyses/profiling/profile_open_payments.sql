@@ -29,6 +29,13 @@ select
 from dbt_dev.stg_open_payments
 where payment_amount_usd = 400000000;
 
+-- Recipient types
+select
+    recipient_type,
+    count(*) as row_count
+from dbt_dev.stg_open_payments
+group by recipient_type;
+
 -- Payment forms
 select
     payment_form,
@@ -36,3 +43,4 @@ select
 from dbt_dev.stg_open_payments
 group by payment_form
 order by row_count desc;
+

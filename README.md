@@ -5,7 +5,6 @@ A data engineering and analytics project built around the CMS Open Payments 2025
 The project takes the publicly available Open Payments CSV data, loads it into PostgreSQL, and uses dbt to transform the raw data into clean, tested analytical models.
 
 ## Development Principles
-
 The project will follow these principles:
 
 Keep raw source data unchanged.
@@ -21,7 +20,6 @@ Use appropriate materializations based on model purpose and scale.
 Current Data Flow
 
 ## Project Status: In progress
-
 Current stage: Profile staging data
 
 Completed:
@@ -41,7 +39,6 @@ Added initial dbt data tests
 ## Next steps:
 Add additional staging transformations
 Design analytical fact and dimension models
-Add documentation
 Build analytical queries and metrics
 Evaluate performance and model materializations
 Architecture
@@ -89,7 +86,6 @@ This separation keeps the original data independent from transformations managed
 ## Data Profiling
 
 - Total row count: 16,131,856
-- Unique row count: 16,131,856
 - `record_id`: 16,131,856 unique, 16,131,856 non-null
 - Average payment amount: $243.22
 - Payment amount range: $0.01–$400,000,000
@@ -130,7 +126,21 @@ This separation keeps the original data independent from transformations managed
     - `payment_publication_date`
 - `payment_amount_usd` null check: Passed — no records have a null payment amount.
 - `payment_amount_usd` positivity check: Passed — no records have a payment amount less than or equal to $0.00.
-- Payment date range: 2025-01-01 to 2025-12-31
+- `payment_date` range check: Passed - no records outside of 2025.
+- Payment records by month
+    - January: 1177779
+    - February: 1294752
+    - March: 1402344
+    - April: 1488614 
+    - May: 1440029
+    - June: 1322084
+    - July: 1327688
+    - August: 1346794
+    - September: 1437050
+    - October: 1604988
+    - November: 1244090
+    - December: 1045644
+- Publication/payment date consistency check: Passed - no records with publication date prior to payment date.
 - 
 
 ## Observations
@@ -142,9 +152,10 @@ This separation keeps the original data independent from transformations managed
 - 114 payments of >= $1,000,000
 - 15 payments of >= $10,000,000
 - 1 payment of >= $100,000,000
+- Monthly payment records were most numerous in October and least numerous in December, with noticeable variation. 
+
 
 ## Profiling Decisions
-
 - `record_id` is unique and non-null and will be treated as the primary business identifier.
 - `payment_amount_usd` is non-null and positive across all records.
 - Payment amounts will be retained without an upper-bound filter.
@@ -152,15 +163,13 @@ This separation keeps the original data independent from transformations managed
 - Data type standardization and field-level cleaning will occur in dbt staging models.
 - Business-oriented transformations will be deferred to downstream analytical models.
 
-Remaining checklist
-Publication/payment date consistency	
-Program year distribution	
+Remaining profiling checklist:	
 Categorical distributions	
 Geographic distributions		
 Indicator value distributions	
 Product-field consistency	
 Recipient type/specialty consistency
-Whitespace checks
+
 
 
 Directory responsibilities

@@ -25,3 +25,5 @@ models:
         description: "Total amount of the payment in US dollars."
         tests:
           - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"

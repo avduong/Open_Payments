@@ -74,4 +74,12 @@ FROM dbt_dev.stg_open_payments;
 SELECT MIN(payment_date), MAX(payment_date)
 FROM dbt_dev.stg_open_payments;
 
--- 
+-- Payment date distribution
+SELECT EXTRACT(MONTH FROM payment_date) AS payment_month, COUNT(*)
+FROM dbt_dev.stg_open_payments
+GROUP BY payment_month;
+
+-- Publication/payment date consistency
+SELECT *
+FROM dbt_dev.stg_open_payments
+WHERE payment_date > payment_publication_date;

@@ -1,10 +1,26 @@
-Open Payments dbt Project
+# Open Payments dbt Project
 
 A data engineering and analytics project built around the CMS Open Payments 2025 General Payments Dataset.
 
 The project takes the publicly available Open Payments CSV data, loads it into PostgreSQL, and uses dbt to transform the raw data into clean, tested analytical models.
 
-Project Status
+## Development Principles
+
+The project will follow these principles:
+
+Keep raw source data unchanged.
+Use dbt sources to reference externally loaded data.
+Keep staging models close to the source structure.
+Perform cleaning and type standardization in staging.
+Use tests to validate important assumptions.
+Separate reusable transformations from final analytical models.
+Prefer clear, descriptive model and column names.
+Document important business logic.
+Avoid duplicating raw data unnecessarily.
+Use appropriate materializations based on model purpose and scale.
+Current Data Flow
+
+## Project Status: In progress
 
 Current stage: Profile staging data
 
@@ -22,7 +38,7 @@ Successfully built the staging model as a PostgreSQL view
 Standardized initial staging data types
 Added initial dbt data tests
 
-Next steps:
+## Next steps:
 Add additional staging transformations
 Design analytical fact and dimension models
 Add documentation
@@ -67,17 +83,19 @@ The current data flow is:
                  Analytical Marts
 
 The raw source data remains in the PostgreSQL public schema.
-
 dbt creates transformed models in the dbt_dev schema.
-
 This separation keeps the original data independent from transformations managed by dbt.
 
-### Data Profiling
+## Data Profiling
 
-- Row count: 16,131,856
+- Total row count: 16,131,856
+- Unique row count: 16,131,856
 - `record_id`: 16,131,856 unique, 16,131,856 non-null
 - Average payment amount: $243.22
 - Payment amount range: $0.01–$400,000,000
+- First quartile (Q1): $15.79
+- Median (Q2): $21.16
+- Third quartile (Q3): $30.12
 - Payment forms:
   - In-kind items and services: 13,911,080
   - Cash or cash equivalent: 2,220,038
@@ -89,9 +107,34 @@ This separation keeps the original data independent from transformations managed
   - Covered Recipient Physician: 10,129,623
   - Covered Recipient Non-Physician Practitioner: 5,966,664
   - Covered Recipient Teaching Hospital: 35,569
-- Null patterns: TBD
+- Null patterns: [summary file](/open_payments/analyses/profiling/null_counts.csv)
+  - Fields with no null values:
+    - `record_id`
+    - `change_type`
+    - `recipient_type`
+    - `recipient_country`
+    - `submitting_manufacturer_gpo_name`
+    - `manufacturer_gpo_id`
+    - `manufacturer_gpo_name`
+    - `manufacturer_gpo_country`
+    - `payment_amount_usd`
+    - `payment_date`
+    - `payment_count`
+    - `payment_form`
+    - `payment_nature`
+    - `third_party_payment_recipient_indicator`
+    - `delay_in_publication_indicator`
+    - `dispute_status`
+    - `related_product_indicator`
+    - `program_year`
+    - `payment_publication_date`
+- `payment_amount_usd` null check: Passed — no records have a null payment amount.
+- `payment_amount_usd` positivity check: Passed — no records have a payment amount less than or equal to $0.00.
+- Payment date range: 2025-01-01 to 2025-12-31
+- 
 
-### Observations
+## Observations
+- Median and third quartile of payment amounts were $21.16 and $30.12, indicating that 75% payments were $30.12 or smaller.
 - A $400,000,000 payment was identified as the maximum payment amount.
 - The record is associated with a covered recipient teaching hospital, BioNTech SE, and has a payment nature of "Royalty or License."
 - The record was investigated as an outlier but was not identified as an obvious data-quality error.
@@ -99,6 +142,25 @@ This separation keeps the original data independent from transformations managed
 - 114 payments of >= $1,000,000
 - 15 payments of >= $10,000,000
 - 1 payment of >= $100,000,000
+
+## Profiling Decisions
+
+- `record_id` is unique and non-null and will be treated as the primary business identifier.
+- `payment_amount_usd` is non-null and positive across all records.
+- Payment amounts will be retained without an upper-bound filter.
+- Raw source data will remain unchanged in the `public` schema.
+- Data type standardization and field-level cleaning will occur in dbt staging models.
+- Business-oriented transformations will be deferred to downstream analytical models.
+
+Remaining checklist
+Publication/payment date consistency	
+Program year distribution	
+Categorical distributions	
+Geographic distributions		
+Indicator value distributions	
+Product-field consistency	
+Recipient type/specialty consistency
+Whitespace checks
 
 
 Directory responsibilities
@@ -333,21 +395,7 @@ The source contains multiple sets of product-related columns:
 
 These may eventually be normalized into a separate product/payment relationship rather than remaining as repeated columns.
 
-Development Principles
 
-The project will follow these principles:
-
-Keep raw source data unchanged.
-Use dbt sources to reference externally loaded data.
-Keep staging models close to the source structure.
-Perform cleaning and type standardization in staging.
-Use tests to validate important assumptions.
-Separate reusable transformations from final analytical models.
-Prefer clear, descriptive model and column names.
-Document important business logic.
-Avoid duplicating raw data unnecessarily.
-Use appropriate materializations based on model purpose and scale.
-Current Data Flow
 
 At the current stage, the implemented pipeline is:
 

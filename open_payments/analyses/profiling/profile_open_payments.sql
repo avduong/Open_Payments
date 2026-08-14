@@ -1,23 +1,19 @@
--- Row count
-select count(*)
-from dbt_dev.stg_open_payments;
-
 -- Check for non-null or duplicate repeat record_id's
-select
-    count(*) as total_rows,
-    count(record_id) as non_null_record_ids,
-    count(distinct record_id) as distinct_record_ids
-from dbt_dev.stg_open_payments;
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT(record_id) AS non_null_record_ids,
+    COUNT(DISTINCT record_id) AS distinct_record_ids
+FROM dbt_dev.stg_open_payments;
 
 -- Payment amount distribution
-select
+SELECT
     min(payment_amount_usd),
     max(payment_amount_usd),
     avg(payment_amount_usd)
-from dbt_dev.stg_open_payments;
+FROM dbt_dev.stg_open_payments;
 
 -- Identify max payment
-select
+SELECT
     record_id,
     recipient_type,
     recipient_first_name,
@@ -26,21 +22,56 @@ select
     payment_amount_usd,
     payment_date,
     payment_nature
-from dbt_dev.stg_open_payments
-where payment_amount_usd = 400000000;
+FROM dbt_dev.stg_open_payments
+WHERE payment_amount_usd = 400000000;
 
 -- Recipient types
-select
+SELECT
     recipient_type,
-    count(*) as row_count
-from dbt_dev.stg_open_payments
-group by recipient_type;
+    COUNT(*) AS row_count
+FROM dbt_dev.stg_open_payments
+GROUP BY recipient_type;
 
 -- Payment forms
-select
+SELECT
     payment_form,
-    count(*) as row_count
-from dbt_dev.stg_open_payments
-group by payment_form
-order by row_count desc;
+    count(*) AS row_count
+FROM dbt_dev.stg_open_payments
+GROUP BY payment_form
+ORDER BY row_count DESC;
 
+-- Output of this query is the actual query for finding null counts of each column
+SELECT
+    'SELECT ' ||
+    string_agg(
+        format(
+            'COUNT(*) FILTER (WHERE %I IS NULL) AS %I_null_count',
+            column_name,
+            column_name
+        ),
+        ', ' ORDER BY ordinal_position
+    ) ||
+    ' FROM dbt_dev.stg_open_payments;'
+FROM information_schema.columns
+WHERE table_schema = 'dbt_dev'
+  AND table_name = 'stg_open_payments';
+
+-- Zero or negative payments
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT_IF(payment_amount_usd IS NULL) AS null_amounts,
+    COUNT_IF(payment_amount_usd <= 0) AS non_positive_amounts
+FROM dbt_dev.stg_open_payments;
+
+-- Q1, Q2, Q3 of payment amount
+SELECT 
+	PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY payment_amount_usd) AS first_quartile,
+	PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY payment_amount_usd) AS median,
+	PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY payment_amount_usd) AS third_quartile
+FROM dbt_dev.stg_open_payments;
+
+-- Payment date range
+SELECT MIN(payment_date), MAX(payment_date)
+FROM dbt_dev.stg_open_payments;
+
+-- 

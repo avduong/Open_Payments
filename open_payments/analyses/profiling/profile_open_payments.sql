@@ -1,4 +1,4 @@
--- Check for non-null or duplicate repeat record_id's
+-- Check record_id completeness and uniqueness
 SELECT
     COUNT(*) AS total_rows,
     COUNT(record_id) AS non_null_record_ids,
@@ -83,3 +83,27 @@ GROUP BY payment_month;
 SELECT *
 FROM dbt_dev.stg_open_payments
 WHERE payment_date > payment_publication_date;
+
+-- Distribution by state for recipient
+SELECT
+    payment_state,
+    COUNT(*) AS record_count,
+    ROUND(
+        COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (),
+        2
+    ) AS percentage
+FROM dbt_dev.stg_open_payments
+GROUP BY payment_state
+ORDER BY record_count DESC;
+
+-- Distribution of payment nature. Used the same query template for all indicator categories
+SELECT
+    payment_nature,
+    COUNT(*) AS record_count,
+    ROUND(
+        COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (),
+        2
+    ) AS percentage
+FROM dbt_dev.stg_open_payments
+GROUP BY payment_nature
+ORDER BY record_count DESC;

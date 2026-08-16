@@ -20,7 +20,7 @@ The project will follow these principles:
 - Current Data Flow
 
 ## Project Status: In progress
-Current stage: Profile staging data
+Current stage: Design analytical fact and dimension models
 
 Completed:
 - Downloaded the 2025 Open Payments General Payments dataset
@@ -37,8 +37,6 @@ Completed:
 - Added initial dbt data tests
 
 ## Next steps:
-- Add additional staging transformations
-- Design analytical fact and dimension models
 - Build analytical queries and metrics
 - Evaluate performance and model materializations
 - Architecture
@@ -140,8 +138,8 @@ This separation keeps the original data independent from transformations managed
     - November: 1244090
     - December: 1045644
 - Publication/payment date consistency check: Passed - no records with publication date prior to payment date.
-- Distinct recipient state codes: 60 records (including AS, MP, GU, PR, VI, AA, AE, AP, DC, and null).
-- Distinct manufacturer state codes: 49 records (including DC and null).
+- Distinct recipient state codes: 60 values (including AS, MP, GU, PR, VI, AA, AE, AP, DC, and null).
+- Distinct manufacturer state codes: 49 values (including DC and null).
 - Top 2 Payment Nature: Food and Beverage (91.52%), Travel and Lodging (3.86%).
 - Change Type: New (99.97%), Add (0.03%)
 - Indicator value distributions
@@ -156,22 +154,28 @@ This separation keeps the original data independent from transformations managed
   - Product 3 Coverage: NULL (96.62%), Covered (3.26%), Non-Covered (0.12%)
   - Product 4 Coverage: NULL (98.18%), Covered (1.76%), Non-Covered (0.06%)
   - Product 5 Coverage: NULL (98.83%), Covered (1.15%), Non-Covered (0.03%)
-
+- Recipient type and specialty do not exhibit a strict one-to-one relationship in the observed data.
+- Some records contain recipient specialties whose taxonomy category differs from the recipient's primary type.
+- Records may have more than one specialty listed, and the same recipient can appear multiple times.
 
 ## Observations
-- Median and third quartile of payment amounts were $21.16 and $30.12, indicating that 75% payments were $30.12 or less.
 - A $400,000,000 payment was identified as the maximum payment amount.
-- The record is associated with a covered recipient teaching hospital, BioNTech SE, and has a payment nature of "Royalty or License."
-- The record was investigated as an outlier but was not identified as an obvious data-quality error.
-- No payment amount cap or outlier-removal rule will be applied based on this observation.
-- 114 payments of >= $1,000,000
-- 15 payments of >= $10,000,000
-- 1 payment of >= $100,000,000
+  - 114 payments of >= $1,000,000
+  - 15 payments of >= $10,000,000
+  - 1 payment of >= $100,000,000
+  - The record is associated with a covered recipient teaching hospital, BioNTech SE, and has a payment nature of "Royalty or License."
+  - The record was investigated as an outlier but was not identified as an obvious data-quality error.
+  - No payment amount cap or outlier-removal rule will be applied based on this observation.
+- Recipient type and specialty do not exhibit a strict one-to-one relationship in the observed data.
+  - Records with recipient type `Doctor of Dentistry` were used as an initial case study to determine whether associated specialty values aligned with the recipient type.
+  - Numerous records contained specialty values whose taxonomy category appeared inconsistent with the recipient type.
+  - The source documentation does not establish a strict mapping between recipient type and specialty, so these differences were not treated as data-quality errors.
+  - No recipient type–specialty combinations were classified as invalid based solely on this analysis.
+- Median and third quartile of payment amounts were $21.16 and $30.12, indicating that 75% payments were $30.12 or less.
 - Monthly payment records were most numerous in October and least numerous in December, with noticeable variation.
 - Recipient state codes included location beyond the 50 states.
-- Manufacturer states codes were one of the 50 states, DC, or NULL.
+- Manufacturer state codes included 49 distinct values, including DC and NULL.
 - No payment records had a delay in publication.
-
 
 ## Profiling Decisions
 - Indicator NULL values will be retained unless they represent an invalid or inconsistent value. 
@@ -183,10 +187,6 @@ This separation keeps the original data independent from transformations managed
 - Raw source data will remain unchanged in the `public` schema.
 - Data type standardization and field-level cleaning will occur in dbt staging models.
 - Business-oriented transformations will be deferred to downstream analytical models.
-
-Remaining profiling checklist:			
-- Product-field consistency	
-- Recipient type/specialty consistency
 
 
 

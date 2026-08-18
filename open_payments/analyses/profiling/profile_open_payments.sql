@@ -1,18 +1,18 @@
--- Check record_id completeness and uniqueness
+-- Is record_id not null and unique?
 SELECT
     COUNT(*) AS total_rows,
     COUNT(record_id) AS non_null_record_ids,
     COUNT(DISTINCT record_id) AS distinct_record_ids
 FROM dbt_dev.stg_open_payments;
 
--- Payment amount distribution
+-- What are the minimum, maximum, and average payment amounts?
 SELECT
     min(payment_amount_usd) AS min_payment_amount,
     max(payment_amount_usd) AS max_payment_amount,
     avg(payment_amount_usd) AS avg_payment_amount
 FROM dbt_dev.stg_open_payments;
 
--- Identify max payment
+-- What is the nature of the $400,000,000 payment?
 SELECT
     record_id,
     recipient_type,
@@ -25,14 +25,14 @@ SELECT
 FROM dbt_dev.stg_open_payments
 WHERE payment_amount_usd = 400000000;
 
--- Recipient types
+-- What is the distribution of recipient types?
 SELECT
     recipient_type,
     COUNT(*) AS row_count
 FROM dbt_dev.stg_open_payments
 GROUP BY recipient_type;
 
--- Payment forms
+-- What is the distribution of payment forms?
 SELECT
     payment_form,
     count(*) AS row_count

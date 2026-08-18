@@ -169,8 +169,8 @@ This separation keeps the original data independent from transformations managed
 - Recipient type and specialty do not exhibit a strict one-to-one relationship in the observed data.
   - Records with recipient type `Doctor of Dentistry` were used as an initial case study to determine whether associated specialty values aligned with the recipient type.
   - Numerous records contained specialty values whose taxonomy category appeared inconsistent with the recipient type.
-  - The source documentation does not establish a strict mapping between recipient type and specialty, so these differences were not treated as data-quality errors.
-  - No recipient type–specialty combinations were classified as invalid based solely on this analysis.
+  - The source documentation does not establish a strict mapping between recipient type and specialty.
+  - No recipient type–specialty combinations were classified as invalid based solely on this analysis but do prompt further investigation during analysis.
 - Median and third quartile of payment amounts were $21.16 and $30.12, indicating that 75% payments were $30.12 or less.
 - Monthly payment records were most numerous in October and least numerous in December, with noticeable variation.
 - Recipient state codes included location beyond the 50 states.
@@ -188,5 +188,134 @@ This separation keeps the original data independent from transformations managed
 - Data type standardization and field-level cleaning will occur in dbt staging models.
 - Business-oriented transformations will be deferred to downstream analytical models.
 
+## Fact and Dimension Models
+Grain: One row represents one payment record from the 2025 Open Payments General Payments dataset, identified by record_id.
+
+Analytical Questions:
+- How do payment volume and payment amounts vary across recipient types, specialties, manufacturers, and time?
+- Which manufacturers account for the largest payment amounts and recipient populations?
+
+Data Quality Questions:
+- How consistently does recipient_profile_id identify the same healthcare recipient across payment records?
+- How consistently are NPIs represented within recipient profiles?
+- Do recipient identity and attribute inconsistencies differ by recipient type?
+
+Tentative ERD:
+                         dim_recipient
+                              |
+                       recipient_key
+                              |
+                              ↓
+dim_manufacturer ---> fct_payments
+       |                   |
+       |                   | record_id
+       |                   ↓
+       |          bridge_payment_product
+       |                   |
+       |              product_key
+       |                   |
+       |                   ↓
+       |              dim_product
+       |
+manufacturer_key
+
+fct_payments
+- record_id (PK)
+- change_type
+- payment_amount_usd
+- payment_count
+- payment_form
+- payment_nature
+- travel_city
+- travel_country
+- travel_state
+- physician_ownership_indicator
+- third_party_payment_recipient_indicator
+- third_party_entity_name
+- charity_indicator
+- third_party_equals_recipient_indicator
+- contextual_information
+- delay_in_publication_indicator
+- dispute_status
+- related_product_indicator
+- program_year
+- payment_publication_date
+- payment_date
+- payment_month (new field)
+
+- recipient_key (FK)
+- manufacturer_key (FK)
+
+dim_recipient
+- recipient_key (PK)
+- recipient_type 
+- teaching_hospital_ccn
+- teaching_hospital_id
+- teaching_hospital_name
+- recipient_profile_id
+- recipient_npi
+- recipient_first_name
+- recipient_middle_name
+- recipient_last_name
+- recipient_name_suffix
+- recipient_address_line_1
+- recipient_address_line_2
+- recipient_city
+- recipient_state
+- recipient_zip_code
+- recipient_country
+- recipient_province
+- recipient_postal_code
+- recipient_type_1
+- recipient_type_2
+- recipient_type_3
+- recipient_type_4
+- recipient_type_5
+- recipient_type_6
+- recipient_specialty_1
+- recipient_specialty_2
+- recipient_specialty_3
+- recipient_specialty_4
+- recipient_specialty_5
+- recipient_specialty_6
+- license_state_1
+- license_state_2
+- license_state_3
+- license_state_4
+- license_state_5
+                       
+dim_manufacturer
+- manufacturer_key (PK)
+- submitting_manufacturer_gpo_name
+- manufacturer_gpo_id
+- manufacturer_gpo_name
+- manufacturer_gpo_state
+- manufacturer_gpo_country                     
+                       
+dim_product
+- product_key (PK)
+- product_type
+- product_category
+- product_name
+- product_ndc
+- product_pdi
+
+bridge_payment_product
+- record_id (FK)
+- product_key (FK)
+- product_sequence
+- coverage_indicator
 
 
+We established that:
+
+recipient_profile_id is the likely business identifier for a recipient.
+There are 1,022,575 distinct recipient profiles.
+Recipient attributes aren't stable across payment records:
+97,368 profiles have multiple first names
+245,074 have multiple middle names
+106,147 have multiple last names
+505,158 have multiple addresses
+Only 5 recipient profiles have multiple NPIs.
+We haven't decided how to handle those 5 yet.
+We therefore haven't built dim_recipient yet.

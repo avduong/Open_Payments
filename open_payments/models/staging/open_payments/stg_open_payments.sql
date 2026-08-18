@@ -1,9 +1,8 @@
 select
-    -- Record metadata
+    --Record metadata
     "Record_ID" as record_id,
     "Change_Type" as change_type,
 
-    -- Recipient
     "Covered_Recipient_Type" as recipient_type,
 
     "Teaching_Hospital_CCN"::bigint::text

@@ -191,14 +191,21 @@ This separation keeps the original data independent from transformations managed
 ## Fact and Dimension Models
 Grain: One row represents one payment record from the 2025 Open Payments General Payments dataset, identified by record_id.
 
-Analytical Questions:
-- How do payment volume and payment amounts vary across recipient types, specialties, manufacturers, and time?
-- Which manufacturers account for the largest payment amounts and recipient populations?
+### Primary analytical questions
 
-Data Quality Questions:
-- How consistently does recipient_profile_id identify the same healthcare recipient across payment records?
-- How consistently are NPIs represented within recipient profiles?
-- Do recipient identity and attribute inconsistencies differ by recipient type?
+- How do payment volume and total payment amounts vary over time?
+- How do payment volume and amounts differ across recipient types?
+- Which manufacturers/GPOs account for the largest payment amounts and payment volumes?
+- How do payment patterns differ by payment nature and payment form?
+- How do payment patterns differ across recipient specialties and geographic locations?
+- Are high-value payments concentrated among particular manufacturers, recipient types, payment natures, or time periods?
+
+### Recipient identity and data-quality questions
+
+- Can recipient_profile_id reliably identify a recipient across payment records?
+- Can recipient_profile_id serve as the business identifier for recipients, and which recipient attributes can be treated as stable versus time-varying?
+- Do recipient names, types, specialties, or locations vary within the same recipient profile?
+- Do recipient identity inconsistencies differ by recipient type?
 
 Tentative ERD:
                          dim_recipient
@@ -307,15 +314,16 @@ bridge_payment_product
 - coverage_indicator
 
 
-We established that:
-
-recipient_profile_id is the likely business identifier for a recipient.
-There are 1,022,575 distinct recipient profiles.
-Recipient attributes aren't stable across payment records:
-97,368 profiles have multiple first names
-245,074 have multiple middle names
-106,147 have multiple last names
-505,158 have multiple addresses
-Only 5 recipient profiles have multiple NPIs.
-We haven't decided how to handle those 5 yet.
-We therefore haven't built dim_recipient yet.
+- There are 1,022,575 distinct recipient profiles.
+- Recipient attributes are not stable across payment records:
+  - 97,368 profiles have multiple first names
+  - 245,074 have multiple middle names
+  - 106,147 have multiple last names
+  - 505,158 have multiple addresses
+5 recipient profiles have multiple NPIs.
+  - 10561994 - Jodi Goldman was found to be listed with two different NPI's, one of which was the same as Angie Mikhail
+  - 11335167 - Two providers found both of which only appeared once
+  - 11951587 - 4 records with Nicole Dawn Mosley (NPI 1699663161) and 1 record with Kristen White (NPI 1194428490)
+  - 4866542 - 13 records with Haley Ellis (NPI 1972098820) and 1 record with Alexandra Paz (NPI 1366058463)
+  - 650359 - 3 records with Alexandra Newtson (NPI 1073925863) and 1 record with Rochelle Fayngor (NPI 1134879349)
+- `recipient_profile_id` chosen as business identifier, since the conflicting NPIs were associated with different individuals (apparent source identity error) rather than legitimate one-to-many relationships between recipient profiles and NPIs

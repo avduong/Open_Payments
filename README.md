@@ -192,7 +192,6 @@ This separation keeps the original data independent from transformations managed
 Grain: One row represents one payment record from the 2025 Open Payments General Payments dataset, identified by record_id.
 
 ### Primary analytical questions
-
 - How do payment volume and total payment amounts vary over time?
 - How do payment volume and amounts differ across recipient types?
 - Which manufacturers/GPOs account for the largest payment amounts and payment volumes?
@@ -201,30 +200,32 @@ Grain: One row represents one payment record from the 2025 Open Payments General
 - Are high-value payments concentrated among particular manufacturers, recipient types, payment natures, or time periods?
 
 ### Recipient identity and data-quality questions
-
 - Can recipient_profile_id reliably identify a recipient across payment records?
 - Can recipient_profile_id serve as the business identifier for recipients, and which recipient attributes can be treated as stable versus time-varying?
 - Do recipient names, types, specialties, or locations vary within the same recipient profile?
 - Do recipient identity inconsistencies differ by recipient type?
 
+### Modeling decisions
+- No separate date dimension will be made, and payment date and payment month will remain as attributes on the fact table.
+- Bridge tables will be created to normalize multi-valued attributes, such as recipient types, specialties, and license states, into separate rows while preserving their source order.
+- 
+
 Tentative ERD:
-                         dim_recipient
-                              |
-                       recipient_key
-                              |
-                              ↓
-dim_manufacturer ---> fct_payments
-       |                   |
-       |                   | record_id
-       |                   ↓
-       |          bridge_payment_product
-       |                   |
-       |              product_key
-       |                   |
-       |                   ↓
-       |              dim_product
-       |
-manufacturer_key
+                      dim_recipient
+                            |
+                            |
+dim_manufacturer --- fct_payments
+                          |
+                          | 
+                          ↓
+                 bridge_payment_product
+                          |
+                    product_key
+                          |
+                          ↓
+                     dim_product
+       
+
 
 fct_payments
 - record_id (PK)
@@ -250,16 +251,15 @@ fct_payments
 - payment_date
 - payment_month (new field)
 
-- recipient_key (FK)
-- manufacturer_key (FK)
+- recipient_profile_id (FK)
+- manufacturer_gpo_id (FK)
 
 dim_recipient
-- recipient_key (PK)
+- recipient_profile_id (PK)
 - recipient_type 
 - teaching_hospital_ccn
 - teaching_hospital_id
 - teaching_hospital_name
-- recipient_profile_id
 - recipient_npi
 - recipient_first_name
 - recipient_middle_name
@@ -273,28 +273,25 @@ dim_recipient
 - recipient_country
 - recipient_province
 - recipient_postal_code
-- recipient_type_1
-- recipient_type_2
-- recipient_type_3
-- recipient_type_4
-- recipient_type_5
-- recipient_type_6
-- recipient_specialty_1
-- recipient_specialty_2
-- recipient_specialty_3
-- recipient_specialty_4
-- recipient_specialty_5
-- recipient_specialty_6
-- license_state_1
-- license_state_2
-- license_state_3
-- license_state_4
-- license_state_5
+
+bridge_recipient_type
+- recipient_profile_id (FK)
+- recipient_type
+- recipient_type_order
+
+bridge_recipient_specialty
+- recipient_profile_id (FK)
+- recipient_specialty
+- specialty_order
+
+bridge_recipient_license
+recipient_profile_id (FK)
+license_state
+license_state_order
                        
 dim_manufacturer
-- manufacturer_key (PK)
 - submitting_manufacturer_gpo_name
-- manufacturer_gpo_id
+- manufacturer_gpo_id (PK)
 - manufacturer_gpo_name
 - manufacturer_gpo_state
 - manufacturer_gpo_country                     
@@ -322,7 +319,7 @@ bridge_payment_product
   - 505,158 have multiple addresses
 5 recipient profiles have multiple NPIs.
   - 10561994 - Jodi Goldman was found to be listed with two different NPI's, one of which was the same as Angie Mikhail
-  - 11335167 - Two providers found both of which only appeared once
+  - 11335167 - Two providers found, both of which only appeared once
   - 11951587 - 4 records with Nicole Dawn Mosley (NPI 1699663161) and 1 record with Kristen White (NPI 1194428490)
   - 4866542 - 13 records with Haley Ellis (NPI 1972098820) and 1 record with Alexandra Paz (NPI 1366058463)
   - 650359 - 3 records with Alexandra Newtson (NPI 1073925863) and 1 record with Rochelle Fayngor (NPI 1134879349)

@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: dim_recipient
+    description: >
+      Grain is one row per recipient_profile_id.
+      Names and addresses will be represented in bridge tables.
+
+    columns:
+      - name: recipient_profile_id
+        description: >
+          Business identifier for the recipient profile.
+          Null values, which correspond to teaching hospital records
+          in the source data, are excluded from this dimension.
+        tests:
+          - not_null
+          - unique

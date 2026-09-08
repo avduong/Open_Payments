@@ -208,7 +208,7 @@ Grain: One row represents one payment record from the 2025 Open Payments General
 ### Modeling decisions
 - No separate date dimension will be made, and payment date and payment month will remain as attributes on the fact table.
 - Bridge tables will be created to normalize multi-valued attributes, such as recipient types, specialties, and license states, into separate rows while preserving their source order.
-- 
+- Bridge tables will also be created for recipient attributes, such as names and addresses, when profiling demonstrates substantial variation within a recipient_profile_id.
 
 Tentative ERD:
                       dim_recipient
@@ -257,14 +257,22 @@ fct_payments
 dim_recipient
 - recipient_profile_id (PK)
 - recipient_type 
+- recipient_npi
+
+dim_teaching_hospital
 - teaching_hospital_ccn
 - teaching_hospital_id
 - teaching_hospital_name
-- recipient_npi
+
+bridge_recipient_name
+- recipient_profile_id (FK)
 - recipient_first_name
 - recipient_middle_name
 - recipient_last_name
 - recipient_name_suffix
+
+bridge_recipient_address
+- recipient_profile_id (FK)
 - recipient_address_line_1
 - recipient_address_line_2
 - recipient_city

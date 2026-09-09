@@ -1,4 +1,4 @@
-# Open Payments dbt Project
+# Open Payments Project
 
 A data engineering and analytics project built around the CMS Open Payments 2025 General Payments Dataset.
 
@@ -207,8 +207,10 @@ Grain: One row represents one payment record from the 2025 Open Payments General
 
 ### Modeling decisions
 - No separate date dimension will be made, and payment date and payment month will remain as attributes on the fact table.
-- Bridge tables will be created to normalize multi-valued attributes, such as recipient types, specialties, and license states, into separate rows while preserving their source order.
-- Bridge tables will also be created for recipient attributes, such as names and addresses, when profiling demonstrates substantial variation within a recipient_profile_id.
+- Not every field from the staging model will be part of the fact/dimension tables.
+- Bridge tables will be created to normalize multi-valued recipient attributes, such as names, addresses, specialties, and license states, into separate rows when profiling demonstrates meaningful variation within a recipient_profile_id and the attributes would otherwise violate the dim_recipient grain of one row per recipient.
+- Recipient attributes that are relevant at the payment-record grain, such as recipient_type, will remain on the fact table rather than being moved exclusively to dim_recipient.
+
 
 Tentative ERD:
                       dim_recipient
@@ -226,7 +228,7 @@ dim_manufacturer --- fct_payments
                      dim_product
        
 
-
+### Target Analytical Models
 fct_payments
 - record_id (PK)
 - change_type
@@ -250,26 +252,18 @@ fct_payments
 - payment_publication_date
 - payment_date
 - payment_month (new field)
-
+- recipient_type
 - recipient_profile_id (FK)
 - manufacturer_gpo_id (FK)
-
-dim_recipient
-- recipient_profile_id (PK)
-- recipient_type 
-- recipient_npi
 
 dim_teaching_hospital
 - teaching_hospital_ccn
 - teaching_hospital_id
 - teaching_hospital_name
 
-bridge_recipient_name
+bridge_recipient_npi 
 - recipient_profile_id (FK)
-- recipient_first_name
-- recipient_middle_name
-- recipient_last_name
-- recipient_name_suffix
+- recipient_npi
 
 bridge_recipient_address
 - recipient_profile_id (FK)
@@ -293,9 +287,9 @@ bridge_recipient_specialty
 - specialty_order
 
 bridge_recipient_license
-recipient_profile_id (FK)
-license_state
-license_state_order
+- recipient_profile_id (FK)
+- license_state
+- license_state_order
                        
 dim_manufacturer
 - submitting_manufacturer_gpo_name
@@ -317,6 +311,17 @@ bridge_payment_product
 - product_key (FK)
 - product_sequence
 - coverage_indicator
+
+### Completed Analytical Models
+dim_recipient
+- recipient_profile_id (PK)
+
+bridge_recipient_name
+- recipient_profile_id (FK)
+- recipient_first_name
+- recipient_middle_name
+- recipient_last_name
+- recipient_name_suffix
 
 
 - There are 1,022,575 distinct recipient profiles.

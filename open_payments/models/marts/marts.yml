@@ -15,3 +15,8 @@ models:
         tests:
           - not_null
           - unique
+    
+  - name: bridge_recipient_name
+    description: >
+      One row per distinct recipient_profile_id and recipient name combination.
+      Preserves multiple names observed for the same recipient profile.

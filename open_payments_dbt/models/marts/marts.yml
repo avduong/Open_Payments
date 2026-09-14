@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: open_payments_analytical_mart
+    description: >
+      Analytical mart at the payment-record grain, with one row per record_id.
+      The model retains the fields from stg_open_payments and adds
+      payment_month as a derived field. The model is materialized as
+      a table and includes indexes to support analytical queries.
+
+    columns:
+      - name: payment_month
+        description: "Derived field from payment_date"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "between 1 and 12"

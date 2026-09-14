@@ -17,10 +17,9 @@ The project will follow these principles:
 - Document important business logic.
 - Avoid duplicating raw data unnecessarily.
 - Use appropriate materializations based on model purpose and scale.
-- Current Data Flow
 
 ## Project Status: In progress
-Current stage: Design analytical fact and dimension models
+Current stage: Build analytical query marts
 
 Completed:
 - Downloaded the 2025 Open Payments General Payments dataset
@@ -35,11 +34,12 @@ Completed:
 - Successfully built the staging model as a PostgreSQL view
 - Standardized initial staging data types
 - Added initial dbt data tests
+- Constructed analytical questions
+- Created primary analytical mart
 
 ## Next steps:
-- Build analytical queries and metrics
-- Evaluate performance and model materializations
-- Architecture
+- Create visualization dashboard
+- Refine documentation
 
 The current data flow is:
 
@@ -196,18 +196,20 @@ This separation keeps the original data independent from transformations managed
 - How do payment patterns differ across recipient specialties and geographic locations?
 - Are high-value payments concentrated among particular manufacturers, recipient types, payment natures, or time periods?
 
-### Analytic Mart Design Decision
-To design the database to answer the proposed analytical questions, a star schema was originally proposed to separate the dataset into a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date tables. The recipient fields were profiled:
+### Analytical Mart Design Decision
+A traditional star schema was initially considered with a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date dimensions.
 
-- There are 1,022,575 distinct recipient profiles.
-- Recipient attributes are not stable across payment records:
-  - 97,368 profiles have multiple first names
-  - 245,074 have multiple middle names
-  - 106,147 have multiple last names
-  - 505,158 have multiple addresses
-- 5 recipient profiles have multiple NPIs.
+Recipient profiling showed that a conventional dim_recipient with one row per recipient would require business decisions that are not supported by the source data. Among 1,022,575 recipient profiles:
 
-To make just the recipient dimension in the traditional star schema would require making a business decision and choosing which the set of names, npi, and addresses would represent a recipient (most recent entry, most frequent appearing, etc), making several bridge tables that would result in a significant fan-out, or leaving attributes with significant variation and preventing the recipient dimension from keeping to its grain of 1 row per recipient on the fact table. The conclusion ultimately was that trying to normalize this dataset was not beneficial and opted to move to a One Big Table model from which smaller marts can be derived.
+97,368 have multiple first names.
+245,074 have multiple middle names.
+106,147 have multiple last names.
+505,158 have multiple addresses.
+5 have multiple NPIs.
+
+Resolving these differences would require choosing which values would represent a recipient (e.g. which names, which address), introducing bridge tables, or leaving attributes that otherwise would be on the recipient dimension on the fact table instead. 
+
+As a result, the project opts to use a flat, denormalized model at the payment-record grain as its primary analytical base, rather than a traditional star schema. The analytical mart retains the fields from the stg_open_payments view and adds the derived payment_month field. The model is materialized as a table with indexes selected to support analytical queries. Smaller, purpose-specific marts can still be derived when a stable grain and business definition can be established.
 
 
 

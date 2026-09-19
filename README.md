@@ -1,5 +1,6 @@
 # Open Payments Project
 
+## Introduction
 A data engineering and analytics project built around the CMS Open Payments 2025 General Payments Dataset.
 
 The project takes the publicly available Open Payments CSV data, loads it into PostgreSQL, and uses dbt to transform the raw data into clean, tested analytical models.
@@ -39,7 +40,6 @@ Completed:
 
 ## Next steps:
 - Create visualization dashboard
-- Refine documentation
 
 The current data flow is:
 
@@ -188,18 +188,25 @@ This separation keeps the original data independent from transformations managed
 - Data type standardization and field-level cleaning will occur in dbt staging models.
 - Business-oriented transformations will be deferred to downstream analytical models.
 
-### Primary analytical questions
-- How do payment volume and total payment amounts vary over time?
+## Primary Analytical Questions
+- Are there predictable structural cycles or seasonality in cash outflows? 
 - How do payment volume and amounts differ across recipient types?
 - Which manufacturers/GPOs account for the largest payment amounts and payment volumes?
 - How do payment patterns differ by payment nature and payment form?
 - How do payment patterns differ across recipient specialties and geographic locations?
 - Are high-value payments concentrated among particular manufacturers, recipient types, payment natures, or time periods?
 
-### Analytical Mart Design Decision
-A traditional star schema was initially considered with a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date dimensions.
+## Dental Specific Questions
+- How do dental sector payment trends deviate from the broader medical market? 
+- What is the average and median payment amount for dental specialties (General Dentistry, Oral Surgery, Orthodontics) compared to medical specialties?
+- Which dental device manufacturers, implant companies, or bone-graft suppliers hold the highest financial market share of provider incentives?
+- Is there a higher concentration of non-cash (in-kind items/services like travel, meals, or consulting) vs. direct cash payments in dental fields compared to general medicine?
 
-Recipient profiling showed that a conventional dim_recipient with one row per recipient would require business decisions that are not supported by the source data. Among 1,022,575 recipient profiles:
+## Ultimate Question
+- What is the minimum financial bonus an insurance plan must offer a specific provider specialty to successfully incentivize them away from high-cost vendor relationships and toward cost-effective care paths?
+
+## Analytical Mart Design
+A traditional star schema was initially considered with a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date dimensions. However, recipient profiling showed that a conventional dim_recipient with one row per recipient would require business decisions that are not supported by the source data. Among 1,022,575 recipient profiles:
 
 97,368 have multiple first names.
 245,074 have multiple middle names.
@@ -207,9 +214,13 @@ Recipient profiling showed that a conventional dim_recipient with one row per re
 505,158 have multiple addresses.
 5 have multiple NPIs.
 
-Resolving these differences would require choosing which values would represent a recipient (e.g. which names, which address), introducing bridge tables, or leaving attributes that otherwise would be on the recipient dimension on the fact table instead. 
+Resolving these differences would require choosing which values would represent a recipient (e.g. which names, which address), introducing bridge tables, or leaving attributes that otherwise would be on the recipient dimension on the fact table instead. Similar issues were expected for the other proposed dimensions.
 
-As a result, the project opts to use a flat, denormalized model at the payment-record grain as its primary analytical base, rather than a traditional star schema. The analytical mart retains the fields from the stg_open_payments view and adds the derived payment_month field. The model is materialized as a table with indexes selected to support analytical queries. Smaller, purpose-specific marts can still be derived when a stable grain and business definition can be established.
+As a result, the project opts to use a flat, denormalized model at the payment-record grain as the analytical base, rather than a traditional star schema. The analytical mart, named open_payments_analytical_mart, retains the fields from the stg_open_payments view and adds the derived payment_month field. The model is materialized as a table with indexes selected to support analytical queries. 
 
+Smaller, purpose-specific marts are derived from open_payments_analytical_mart on the basis that a stable grain could be found as well as its usefulness answering the questions proposed above. 
 
+## Optimized Specialized Marts
+- executive_summary_mart: Includes the summary metrics to answer the primary analytical questions. is_million_plus_payment was created to flag records with payment amounts greater than or equal to $1,000,000.
+- 
 

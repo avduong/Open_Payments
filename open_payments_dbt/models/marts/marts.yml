@@ -16,3 +16,50 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: "between 1 and 12"
+
+      - name: is_dental_sector
+        description: > 
+          Derived field from recipient_type_1 through recipient_type_6 to
+          identify payment records where recipient has a Doctor of Dentistry
+          degree.
+        tests:
+          - not_null
+
+  - name: executive_summary_mart
+    description: "Mart including summary metrics to answer the primary analytical questions."
+
+    columns:
+      - name: payment_year
+        description: "The program year of the payment data."
+        tests:
+          - not_null
+
+      - name: payment_month
+        description: "The calendar month extracted from the payment date."
+        tests:
+          - not_null
+
+      - name: recipient_type
+        description: "The broad class of covered recipient (Physician, Non-Physician Practitioner, Teaching Hospital)."
+        tests:
+          - not_null
+
+      - name: is_dental_sector
+        description: "Boolean flag pulled from the base mart identifying dental providers."
+        tests:
+          - not_null
+
+      - name: is_million_plus_payment
+        description: "Boolean flag identifying records with payment amounts greater than or equal to $1,000,000."
+        tests:
+          - not_null
+
+      - name: total_payment_volume
+        description: "The aggregated count of payment transactions for this specific group grain."
+        tests:
+          - not_null
+
+      - name: total_payment_amount_usd
+        description: "The cumulative financial sum of all payments in USD for this grain."
+        tests:
+          - not_null

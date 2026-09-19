@@ -1,5 +1,4 @@
 {{ config(
-    materialized='table',
     indexes=[
       {'columns': ['record_id'], 'unique': true},
       {'columns': ['recipient_npi']},
@@ -38,6 +37,18 @@ select
     recipient_type_4,
     recipient_type_5,
     recipient_type_6,
+
+    case 
+        when recipient_type_1 = 'Doctor of Dentistry'
+          or recipient_type_2 = 'Doctor of Dentistry'
+          or recipient_type_3 = 'Doctor of Dentistry'
+          or recipient_type_4 = 'Doctor of Dentistry'
+          or recipient_type_5 = 'Doctor of Dentistry'
+          or recipient_type_6 = 'Doctor of Dentistry'
+          then true 
+        else false 
+    end as is_dental_sector,
+
     recipient_specialty_1,
     recipient_specialty_2,
     recipient_specialty_3,

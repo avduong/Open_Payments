@@ -1,4 +1,5 @@
 {{ config(
+    materialized='table',
     indexes=[
       {'columns': ['record_id'], 'unique': true},
       {'columns': ['recipient_npi']},
@@ -19,7 +20,7 @@ select
     recipient_middle_name,
     recipient_last_name,
     recipient_name_suffix,
-    
+
     -- Address
     recipient_address_line_1,
     recipient_address_line_2,
@@ -38,16 +39,13 @@ select
     recipient_type_5,
     recipient_type_6,
 
-    case 
-        when recipient_type_1 = 'Doctor of Dentistry'
-          or recipient_type_2 = 'Doctor of Dentistry'
-          or recipient_type_3 = 'Doctor of Dentistry'
-          or recipient_type_4 = 'Doctor of Dentistry'
-          or recipient_type_5 = 'Doctor of Dentistry'
-          or recipient_type_6 = 'Doctor of Dentistry'
-          then true 
-        else false 
-    end as is_dental_sector,
+    coalesce(
+        'Doctor of Dentistry' = ANY(ARRAY[
+            recipient_type_1, recipient_type_2, recipient_type_3, 
+            recipient_type_4, recipient_type_5, recipient_type_6
+        ]),
+        false
+    ) as is_dental_sector,
 
     recipient_specialty_1,
     recipient_specialty_2,
@@ -73,7 +71,7 @@ select
     -- Payment metrics
     payment_amount_usd,
     payment_date,
-    date_part('month', payment_date)::integer as payment_month,
+    extract(month from payment_date)::integer as payment_month,
     payment_count,
     payment_form,
     payment_nature,

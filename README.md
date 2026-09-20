@@ -203,7 +203,7 @@ This separation keeps the original data independent from transformations managed
 - Is there a higher concentration of non-cash (in-kind items/services like travel, meals, or consulting) vs. direct cash payments in dental fields compared to general medicine?
 
 ## Ultimate Question
-- What is the minimum financial bonus an insurance plan must offer a specific provider specialty to successfully incentivize them away from high-cost vendor relationships and toward cost-effective care paths?
+- What is the Present Value (PV) of the annual cash and in-kind vendor incentives flowing to a given provider specialty, and what level of level-annuity bonus must a value-based insurance contract offer to financially neutralize this vendor relationship?
 
 ## Analytical Mart Design
 A traditional star schema was initially considered with a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date dimensions. However, recipient profiling showed that a conventional dim_recipient with one row per recipient would require business decisions that are not supported by the source data. Among 1,022,575 recipient profiles:
@@ -221,6 +221,8 @@ As a result, the project opts to use a flat, denormalized model at the payment-r
 Smaller, purpose-specific marts are derived from open_payments_analytical_mart on the basis that a stable grain could be found as well as its usefulness answering the questions proposed above. 
 
 ## Optimized Specialized Marts
-- executive_summary_mart: Includes the summary metrics to answer the primary analytical questions. is_million_plus_payment was created to flag records with payment amounts greater than or equal to $1,000,000.
-- 
+Three marts were created to answer the set of questions proposed.
 
+- mart_seasonal_payments: answers questions about structural cycles, seasonality, and how payment attributes (nature vs. form) differ between the general medical market and the dental sector over time.
+- mart_manufacturer_shares: answers which manufacturers have the highest market share, distinguishing between medical and dental suppliers as well as geographic location (recipient_state).
+- mart_provider_incentives: provides foundation for calculator that will be used to answer the Ultimate Question, allowing filter by specialty, state, and nature of payment.

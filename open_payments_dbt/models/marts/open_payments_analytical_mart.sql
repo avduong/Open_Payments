@@ -2,8 +2,7 @@
     materialized='table',
     indexes=[
       {'columns': ['record_id'], 'unique': true},
-      {'columns': ['recipient_npi']},
-      {'columns': ['payment_date', 'payment_nature']}
+      {'columns': ['recipient_npi']}
     ]
 ) }}
 

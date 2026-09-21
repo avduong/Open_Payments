@@ -1,9 +1,7 @@
 # Open Payments Project
 
 ## Introduction
-A data engineering and analytics project built around the CMS Open Payments 2025 General Payments Dataset.
-
-The project takes the publicly available Open Payments CSV data, loads it into PostgreSQL, and uses dbt to transform the raw data into clean, tested analytical models.
+This project takes the publicly available CMS Open Payments 2025 General Payments Dataset loads it onto PostgreSQL and uses dbt to transform the data into analytical models. A Streamlit app is created from the specialized analytical marts to visualize data and answer the 
 
 ## Development Principles
 The project will follow these principles:
@@ -20,7 +18,7 @@ The project will follow these principles:
 - Use appropriate materializations based on model purpose and scale.
 
 ## Project Status: In progress
-Current stage: Build analytical query marts
+Current and final stage: Create visualization dashboard
 
 Completed:
 - Downloaded the 2025 Open Payments General Payments dataset
@@ -37,49 +35,21 @@ Completed:
 - Added initial dbt data tests
 - Constructed analytical questions
 - Created primary analytical mart
+- Build analytical query marts
 
-## Next steps:
-- Create visualization dashboard
+## Data Flow
+- From Public Dataset to PostgreSQL
 
-The current data flow is:
+CMS Open Payments 2025 CSV Dataset --> Local CSV Dataset --> Python Ingestion --> PostgresSQL (DB = payment_db)
 
- CMS Open Payments
-                    2025 CSV Dataset
-                           |
-                           v
-                     Local CSV Data
-                           |
-                           v
-                  Python Ingestion Scripts
-                           |
-                           v
-                    +-------------+
-                    | PostgreSQL  |
-                    |  payment_db |
-                    +-------------+
-                           |
-                           v
-                    public schema
-                           |
-                           v
-              general_payment_2025
-                           |
-                           |  dbt source()
-                           v
-                 +-------------------+
-                 |  Staging Model    |
-                 | stg_open_payments  |
-                 +-------------------+
-                           |
-                           v
-                 dbt_dev schema
-                           |
-                           v
-                 Analytical Marts
-
-The raw source data remains in the PostgreSQL public schema.
-dbt creates transformed models in the dbt_dev schema.
-This separation keeps the original data independent from transformations managed by dbt.
+Inside payment_db
+  raw table: public.general_payment_2025
+  staging model: dbt_dev.stg_open_payments
+  base analytical marts: dbt_dev.open_payments_analytical_mart
+    specialized marts: 
+      - dbt_dev.mart_seasonal_payments
+      - dbt_dev.mart_manufacturer_shares
+      - dbt_dev.mart_provider_incentives
 
 ## Data Profiling
 - Total row count: 16,131,856
@@ -188,7 +158,8 @@ This separation keeps the original data independent from transformations managed
 - Data type standardization and field-level cleaning will occur in dbt staging models.
 - Business-oriented transformations will be deferred to downstream analytical models.
 
-## Primary Analytical Questions
+## Analytical Questions
+### Primary
 - Are there predictable structural cycles or seasonality in cash outflows? 
 - How do payment volume and amounts differ across recipient types?
 - Which manufacturers/GPOs account for the largest payment amounts and payment volumes?
@@ -196,14 +167,13 @@ This separation keeps the original data independent from transformations managed
 - How do payment patterns differ across recipient specialties and geographic locations?
 - Are high-value payments concentrated among particular manufacturers, recipient types, payment natures, or time periods?
 
-## Dental Specific Questions
+### Dental Specific
 - How do dental sector payment trends deviate from the broader medical market? 
-- What is the average and median payment amount for dental specialties (General Dentistry, Oral Surgery, Orthodontics) compared to medical specialties?
-- Which dental device manufacturers, implant companies, or bone-graft suppliers hold the highest financial market share of provider incentives?
+- Which dental product manufacturers/suppliers hold the highest financial market share of provider incentives?
 - Is there a higher concentration of non-cash (in-kind items/services like travel, meals, or consulting) vs. direct cash payments in dental fields compared to general medicine?
 
-## Ultimate Question
-- What is the Present Value (PV) of the annual cash and in-kind vendor incentives flowing to a given provider specialty, and what level of level-annuity bonus must a value-based insurance contract offer to financially neutralize this vendor relationship?
+### Ultimate Question
+- What is the total vendor incentives in dollars flowing into specific specialty provider groups, and how does a high concentration of vendor incentives correlate with the utilization of higher-cost proprietary medical/ dental protocols over lower-cost, value-based alternatives?"
 
 ## Analytical Mart Design
 A traditional star schema was initially considered with a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date dimensions. However, recipient profiling showed that a conventional dim_recipient with one row per recipient would require business decisions that are not supported by the source data. Among 1,022,575 recipient profiles:
@@ -216,13 +186,14 @@ A traditional star schema was initially considered with a fct_payment table alon
 
 Resolving these differences would require choosing which values would represent a recipient (e.g. which names, which address), introducing bridge tables, or leaving attributes that otherwise would be on the recipient dimension on the fact table instead. Similar issues were expected for the other proposed dimensions.
 
-As a result, the project opts to use a flat, denormalized model at the payment-record grain as the analytical base, rather than a traditional star schema. The analytical mart, named open_payments_analytical_mart, retains the fields from the stg_open_payments view and adds the derived payment_month field. The model is materialized as a table with indexes selected to support analytical queries. 
+As a result, the project opts to use a flat, denormalized model at the payment-record grain as the analytical base, rather than a traditional star schema. The analytical mart, named open_payments_analytical_mart, retains the fields from the stg_open_payments view. Furthermore, the open_payments_analytical_mart contains the payment_month field that was derived from payment_date along with the is_dental_sector, which searches for records where recipient_type_1 through recipient_type_6 contains "Doctor of Dentistry". The model is materialized as a table with indexes selected to support analytical queries. 
 
-Smaller, purpose-specific marts are derived from open_payments_analytical_mart on the basis that a stable grain could be found as well as its usefulness answering the questions proposed above. 
-
-## Optimized Specialized Marts
-Three marts were created to answer the set of questions proposed.
+## Specialized Marts
+Smaller, purpose-specific marts are derived from open_payments_analytical_mart to answer the questions proposed above. Three of these smaller marts are created.
 
 - mart_seasonal_payments: answers questions about structural cycles, seasonality, and how payment attributes (nature vs. form) differ between the general medical market and the dental sector over time.
 - mart_manufacturer_shares: answers which manufacturers have the highest market share, distinguishing between medical and dental suppliers as well as geographic location (recipient_state).
 - mart_provider_incentives: provides foundation for calculator that will be used to answer the Ultimate Question, allowing filter by specialty, state, and nature of payment.
+
+## Visualization
+Streamlit app is created, importing 

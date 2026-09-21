@@ -16,6 +16,7 @@ with profile_aggregation as (
         -- Aggregating financial totals
         sum(payment_amount_usd) as total_vendor_spend_usd,
         count(*) as total_payment_volume,
+        count(distinct manufacturer_gpo_name) as unique_vendors_engaged,
         
         -- Segmenting values for Ultimate Question calculation
         sum(case 
@@ -32,4 +33,18 @@ with profile_aggregation as (
     group by 1, 2, 3, 4, 5
 )
 
-select * from profile_aggregation
+select 
+    *,
+    -- Value-Based Care Risk Math
+    case 
+        when unique_vendors_engaged = 0 then 0.0
+        -- High dollar concentration inside very few vendors highlights clinical capture risk
+        else round((total_vendor_spend_usd / unique_vendors_engaged)::numeric, 2)
+    end as vendor_concentration_factor,
+
+    case 
+        when total_vendor_spend_usd = 0 then 0.0
+        else round((benefits_in_kind_usd / total_vendor_spend_usd)::numeric, 4)
+    end as in_kind_ratio
+
+from profile_aggregation

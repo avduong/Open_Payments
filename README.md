@@ -1,7 +1,7 @@
 # Open Payments Project
 
 ## Introduction
-This project takes the publicly available CMS Open Payments 2025 General Payments Dataset loads it onto PostgreSQL and uses dbt to transform the data into analytical models. A Streamlit app is created from the specialized analytical marts to visualize data and answer the 
+This project takes the publicly available CMS Open Payments 2025 General Payments Dataset loads it onto PostgreSQL and uses dbt to transform the data into analytical models. A Streamlit app is created from the specialized analytical marts to visualize data and answer questions regarding 
 
 ## Development Principles
 The project will follow these principles:
@@ -38,15 +38,15 @@ Completed:
 - Build analytical query marts
 
 ## Data Flow
-- From Public Dataset to PostgreSQL
+### From Public Dataset to PostgreSQL
 
 CMS Open Payments 2025 CSV Dataset --> Local CSV Dataset --> Python Ingestion --> PostgresSQL (DB = payment_db)
 
-Inside payment_db
-  raw table: public.general_payment_2025
-  staging model: dbt_dev.stg_open_payments
-  base analytical marts: dbt_dev.open_payments_analytical_mart
-    specialized marts: 
+### Inside payment_db
+  - raw table: public.general_payment_2025
+  - staging model: dbt_dev.stg_open_payments
+  - base analytical marts: dbt_dev.open_payments_analytical_mart
+    - specialized marts: 
       - dbt_dev.mart_seasonal_payments
       - dbt_dev.mart_manufacturer_shares
       - dbt_dev.mart_provider_incentives
@@ -196,4 +196,4 @@ Smaller, purpose-specific marts are derived from open_payments_analytical_mart t
 - mart_provider_incentives: provides foundation for calculator that will be used to answer the Ultimate Question, allowing filter by specialty, state, and nature of payment.
 
 ## Visualization
-Streamlit app is created, importing 
+A Streamlit app is created from the three specialized marts to visualize the data and answer the analytical questions proposed.

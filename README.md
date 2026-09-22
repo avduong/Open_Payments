@@ -1,7 +1,7 @@
 # Open Payments Project
 
 ## Introduction
-This project takes the publicly available CMS Open Payments 2025 General Payments Dataset loads it onto PostgreSQL and uses dbt to transform the data into analytical models. A Streamlit app is created from the specialized analytical marts to visualize data and answer questions regarding 
+This project takes the publicly available CMS Open Payments 2025 General Payments Dataset loads it onto PostgreSQL and uses dbt to transform the data into analytical models. A Streamlit app is created from the specialized analytical marts to visualize data and answer questions regarding payment patterns and distributions with a specific focus on dental payment trends and how they compare to general medicine payment trends.
 
 ## Development Principles
 The project will follow these principles:
@@ -18,7 +18,7 @@ The project will follow these principles:
 - Use appropriate materializations based on model purpose and scale.
 
 ## Project Status: In progress
-Current and final stage: Create visualization dashboard
+Current and final stage: Answer analytical questions
 
 Completed:
 - Downloaded the 2025 Open Payments General Payments dataset
@@ -36,6 +36,7 @@ Completed:
 - Constructed analytical questions
 - Created primary analytical mart
 - Build analytical query marts
+- Create visualization dashboard
 
 ## Data Flow
 ### From Public Dataset to PostgreSQL
@@ -159,21 +160,18 @@ CMS Open Payments 2025 CSV Dataset --> Local CSV Dataset --> Python Ingestion --
 - Business-oriented transformations will be deferred to downstream analytical models.
 
 ## Analytical Questions
-### Primary
+### General
 - Are there predictable structural cycles or seasonality in cash outflows? 
 - How do payment volume and amounts differ across recipient types?
-- Which manufacturers/GPOs account for the largest payment amounts and payment volumes?
 - How do payment patterns differ by payment nature and payment form?
 - How do payment patterns differ across recipient specialties and geographic locations?
 - Are high-value payments concentrated among particular manufacturers, recipient types, payment natures, or time periods?
+- Which manufacturers/GPOs account for the largest payment amounts and payment volumes?
 
 ### Dental Specific
 - How do dental sector payment trends deviate from the broader medical market? 
 - Which dental product manufacturers/suppliers hold the highest financial market share of provider incentives?
 - Is there a higher concentration of non-cash (in-kind items/services like travel, meals, or consulting) vs. direct cash payments in dental fields compared to general medicine?
-
-### Ultimate Question
-- What is the total vendor incentives in dollars flowing into specific specialty provider groups, and how does a high concentration of vendor incentives correlate with the utilization of higher-cost proprietary medical/ dental protocols over lower-cost, value-based alternatives?"
 
 ## Analytical Mart Design
 A traditional star schema was initially considered with a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date dimensions. However, recipient profiling showed that a conventional dim_recipient with one row per recipient would require business decisions that are not supported by the source data. Among 1,022,575 recipient profiles:
@@ -191,9 +189,21 @@ As a result, the project opts to use a flat, denormalized model at the payment-r
 ## Specialized Marts
 Smaller, purpose-specific marts are derived from open_payments_analytical_mart to answer the questions proposed above. Three of these smaller marts are created.
 
-- mart_seasonal_payments: answers questions about structural cycles, seasonality, and how payment attributes (nature vs. form) differ between the general medical market and the dental sector over time.
-- mart_manufacturer_shares: answers which manufacturers have the highest market share, distinguishing between medical and dental suppliers as well as geographic location (recipient_state).
+- mart_seasonal_payments: Answers questions about structural cycles, seasonality, and how payment attributes (nature vs. form) differ between the general medical market and the dental sector over time. A filter for payments over $1,000,000 added as an arbitary delineator for a whale payment.
+- mart_manufacturer_shares: Answers which manufacturers have the highest market share, distinguishing between medical and dental suppliers as well as geographic location (recipient_state). The $1,000,000 filter was added in this mart as well.
 - mart_provider_incentives: provides foundation for calculator that will be used to answer the Ultimate Question, allowing filter by specialty, state, and nature of payment.
 
-## Visualization
-A Streamlit app is created from the three specialized marts to visualize the data and answer the analytical questions proposed.
+## Visualization and Analysis
+A Streamlit dashboard app is created from the three specialized marts to visualize the data and answer the analytical questions proposed. Screenshots are provided to show the layout of the dashboard app.
+
+- [Manufacturer Share](open_payments_dbt/snapshots/manufacturer_share.JPG)
+- [Seasonal Trends](open_payments_dbt/snapshots/seasonal_trends.JPG)
+- [Payments By Recipient Type](open_payments_dbt/snapshots/payments_by_recipient_type.JPG)
+- [Dental Deep Dive](open_payments_dbt/snapshots/dental_deep_dive.JPG)
+
+### General
+1. Are there predictable structural cycles or seasonality in cash outflows?
+  - Answer: Since the dataset includes only payments in 2025, a month-to-month comparison from year to year cannot be performed. Within 2025, excluding records with payment amounts greater than $1 million, the months with the greatest volumn of payments were October at 1.6 million transactions, followed by April. However, again excluding records of over $1 million, the months in 2025 with the greatest outflow amounts were May with $301.6 million followed by November with $299 million, thus establishing that the average payment per transaction does not stay steady from month to month.
+2. How do payment volume and amounts differ across recipient types?
+  - Answer: For payments under $1 million, Covered Recipient Physicians account for $2.3 billion and 10,129,556 transactions, Covered Recipient Teaching Hospitals for $305.5 million and 35,522 transactions, and Covered Recipient Non-Physician Practioners for $270.5 million and 5,966,664 transactions. For payments over $1 million, Covered Recipient Teaching Hospitals.
+3. 

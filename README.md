@@ -17,27 +17,6 @@ The project will follow these principles:
 - Avoid duplicating raw data unnecessarily.
 - Use appropriate materializations based on model purpose and scale.
 
-## Project Status: In progress
-Current and final stage: Answer analytical questions
-
-Completed:
-- Downloaded the 2025 Open Payments General Payments dataset
-- Stored the original CSV locally
-- Partitioned the CSV for ingestion
-- Loaded the data into PostgreSQL
-- Created a dbt project
-- Connected dbt to PostgreSQL
-- Configured a dedicated dbt development schema
-- Registered the raw PostgreSQL table as a dbt source
-- Created the first staging model
-- Successfully built the staging model as a PostgreSQL view
-- Standardized initial staging data types
-- Added initial dbt data tests
-- Constructed analytical questions
-- Created primary analytical mart
-- Build analytical query marts
-- Create visualization dashboard
-
 ## Data Flow
 ### From Public Dataset to PostgreSQL
 
@@ -161,17 +140,16 @@ CMS Open Payments 2025 CSV Dataset --> Local CSV Dataset --> Python Ingestion --
 
 ## Analytical Questions
 ### General
-- Are there predictable structural cycles or seasonality in cash outflows? 
-- How do payment volume and amounts differ across recipient types?
-- How do payment patterns differ by payment nature and payment form?
-- How do payment patterns differ across recipient specialties and geographic locations?
-- Are high-value payments concentrated among particular manufacturers, recipient types, payment natures, or time periods?
-- Which manufacturers/GPOs account for the largest payment amounts and payment volumes?
+- Are there predictable structural cycles or seasonality in cash outflows over time?
+- How do payment volumes and amounts differ across recipient types?
+- How do specific payment natures (e.g., consulting, travel, food) trend month-over-month?
+- Which manufacturers and GPOs account for the largest overall payment amounts and volumes?
+- Are million-plus dollar payments concentrated among specific manufacturers, or particular medical/dental specialties and states?
 
 ### Dental Specific
-- How do dental sector payment trends deviate from the broader medical market? 
-- Which dental product manufacturers/suppliers hold the highest financial market share of provider incentives?
-- Is there a higher concentration of non-cash (in-kind items/services like travel, meals, or consulting) vs. direct cash payments in dental fields compared to general medicine?
+- How do dental sector payment trends, vendor concentration, and provider engagement compare to the broader medical market?
+- Which specific dental manufacturers or suppliers hold the highest financial market share of provider incentives?
+- Is there a higher ratio of non-cash (benefits-in-kind) vs. direct cash compensation in the dental field compared to general medicine? (Directly answerable using in_kind_ratio grouped by is_dental_sector)
 
 ## Analytical Mart Design
 A traditional star schema was initially considered with a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date dimensions. However, recipient profiling showed that a conventional dim_recipient with one row per recipient would require business decisions that are not supported by the source data. Among 1,022,575 recipient profiles:
@@ -201,9 +179,9 @@ A Streamlit dashboard app is created from the three specialized marts to visuali
 - [Payments By Recipient Type](open_payments_dbt/snapshots/payments_by_recipient_type.JPG)
 - [Dental Deep Dive](open_payments_dbt/snapshots/dental_deep_dive.JPG)
 
-### General
-1. Are there predictable structural cycles or seasonality in cash outflows?
-  - Answer: Since the dataset includes only payments in 2025, a month-to-month comparison from year to year cannot be performed. Within 2025, excluding records with payment amounts greater than $1 million, the months with the greatest volumn of payments were October at 1.6 million transactions, followed by April. However, again excluding records of over $1 million, the months in 2025 with the greatest outflow amounts were May with $301.6 million followed by November with $299 million, thus establishing that the average payment per transaction does not stay steady from month to month.
-2. How do payment volume and amounts differ across recipient types?
-  - Answer: For payments under $1 million, Covered Recipient Physicians account for $2.3 billion and 10,129,556 transactions, Covered Recipient Teaching Hospitals for $305.5 million and 35,522 transactions, and Covered Recipient Non-Physician Practioners for $270.5 million and 5,966,664 transactions. For payments over $1 million, Covered Recipient Teaching Hospitals.
+### General Questions
+1. Are there predictable structural cycles or seasonality in cash outflows over time?
+  - While 2025 data restricts year-over-year comparisons, monthly trends reveal a clear structural divergence between transaction volume and capital outflow. Transaction volume peaks heavily in October (1.6M transactions), whereas total cash outflow peaks in May ($301.6M) and November ($299M). This indicates that the average payment size fluctuates significantly across the year, driven by fewer, much larger transactions in specific months rather than uniform spending behavior.
+2. How do payment volumes and amounts differ across recipient types and payment forms?
+  - Covered recipient physicians dominate both total volume and spend under the $1 million threshold ($2.3B across 10.1M transactions), vastly outpacing teaching hospitals and non-physician practitioners. However, when looking at mega-payments over $1 million, the concentration shifts heavily toward teaching hospitals. 
 3. 

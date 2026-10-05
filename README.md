@@ -27,7 +27,7 @@ CMS Open Payments 2025 CSV Dataset --> Local CSV Dataset --> Python Ingestion --
   - staging model: dbt_dev.stg_open_payments
   - base analytical marts: dbt_dev.open_payments_analytical_mart
     - specialized marts: 
-      - dbt_dev.mart_seasonal_payments
+      - dbt_dev.mart_payment_aggregate
       - dbt_dev.mart_manufacturer_shares
       - dbt_dev.mart_provider_incentives
 
@@ -140,16 +140,13 @@ CMS Open Payments 2025 CSV Dataset --> Local CSV Dataset --> Python Ingestion --
 
 ## Analytical Questions
 ### General
-- Are there predictable structural cycles or seasonality in cash outflows over time?
-- How do payment volumes and amounts differ across recipient types?
-- How do specific payment natures (e.g., consulting, travel, food) trend month-over-month?
-- Which manufacturers and GPOs account for the largest overall payment amounts and volumes?
-- Are million-plus dollar payments concentrated among specific manufacturers, or particular medical/dental specialties and states?
+1. Are there predictable structural cycles or seasonality in cash outflows over time?
+2. How do payment volumes and amounts differ across recipient types?
+3. Which manufacturers and GPOs account for the largest overall payment amounts?
 
 ### Dental Specific
-- How do dental sector payment trends, vendor concentration, and provider engagement compare to the broader medical market?
-- Which specific dental manufacturers or suppliers hold the highest financial market share of provider incentives?
-- Is there a higher ratio of non-cash (benefits-in-kind) vs. direct cash compensation in the dental field compared to general medicine? (Directly answerable using in_kind_ratio grouped by is_dental_sector)
+4. Which specific dental manufacturers or suppliers hold the highest financial market share of provider incentives, and how do dental sector payment trends, vendor concentration, and provider engagement compare to the broader medical market?
+5. Is there a higher ratio of non-cash (benefits-in-kind) vs. direct cash compensation in the dental field compared to general medicine?
 
 ## Analytical Mart Design
 A traditional star schema was initially considered with a fct_payment table along with dim_recipient, dim_manufacturer, and dim_date dimensions. However, recipient profiling showed that a conventional dim_recipient with one row per recipient would require business decisions that are not supported by the source data. Among 1,022,575 recipient profiles:
@@ -167,21 +164,37 @@ As a result, the project opts to use a flat, denormalized model at the payment-r
 ## Specialized Marts
 Smaller, purpose-specific marts are derived from open_payments_analytical_mart to answer the questions proposed above. Three of these smaller marts are created.
 
-- mart_seasonal_payments: Answers questions about structural cycles, seasonality, and how payment attributes (nature vs. form) differ between the general medical market and the dental sector over time. A filter for payments over $1,000,000 added as an arbitary delineator for a whale payment.
+- mart_payment_aggregates: Answers questions about structural cycles and seasonality of payments over time and how they differ between the general medical market and the dental sector over time. A filter for payments over $1,000,000 added as an arbitary delineator for a whale payment.
 - mart_manufacturer_shares: Answers which manufacturers have the highest market share, distinguishing between medical and dental suppliers as well as geographic location (recipient_state). The $1,000,000 filter was added in this mart as well.
-- mart_provider_incentives: provides foundation for calculator that will be used to answer the Ultimate Question, allowing filter by specialty, state, and nature of payment.
+- mart_provider_incentives: provides foundation for calculator that will be used to answer the Ultimate Question, allowing filter by specialty, state, and nature of payment. The $1,000,000 filter was added in this mart as well.
 
 ## Visualization and Analysis
 A Streamlit dashboard app is created from the three specialized marts to visualize the data and answer the analytical questions proposed. Screenshots are provided to show the layout of the dashboard app.
 
-- [Manufacturer Share](open_payments_dbt/snapshots/manufacturer_share.JPG)
-- [Seasonal Trends](open_payments_dbt/snapshots/seasonal_trends.JPG)
-- [Payments By Recipient Type](open_payments_dbt/snapshots/payments_by_recipient_type.JPG)
+- [Seasonal Trends](open_payments_dbt/snapshots/seasonality.JPG)
+- [Manufacturer Share](open_payments_dbt/snapshots/manufacturers.JPG)
+- [Payment Nature Trends - Transaction Volume](open_payments_dbt/snapshots/payment_nature_1.JPG)
+- [Payment Nature Trends - Total Amount](open_payments_dbt/snapshots/payment_nature_2.JPG)
+- [Payments By Recipient Type](open_payments_dbt/snapshots/recipient_type.JPG)
 - [Dental Deep Dive](open_payments_dbt/snapshots/dental_deep_dive.JPG)
 
 ### General Questions
 1. Are there predictable structural cycles or seasonality in cash outflows over time?
+
   - While 2025 data restricts year-over-year comparisons, monthly trends reveal a clear structural divergence between transaction volume and capital outflow. Transaction volume peaks heavily in October (1.6M transactions), whereas total cash outflow peaks in May ($301.6M) and November ($299M). This indicates that the average payment size fluctuates significantly across the year, driven by fewer, much larger transactions in specific months rather than uniform spending behavior.
+
 2. How do payment volumes and amounts differ across recipient types and payment forms?
+
   - Covered recipient physicians dominate both total volume and spend under the $1 million threshold ($2.3B across 10.1M transactions), vastly outpacing teaching hospitals and non-physician practitioners. However, when looking at mega-payments over $1 million, the concentration shifts heavily toward teaching hospitals. 
-3. 
+  
+3. Which manufacturers and GPOs account for the largest overall payment amounts?
+
+  - BioNTech SE and ABBVIE INC. ranked first and second in total 2025 payment amounts, but the rankings change substantially when $1 million payments are excluded. BioNTech SE’s position is largely driven by the single $400 million payment, which accounts for the majority of its Open Payments spending and drops it outside the top 10 when payments above $1 million are removed. ABBVIE INC., by contrast, ranks first among payments below $1 million. This suggests that headline manufacturer/GPO rankings are heavily influenced by a small number of mega-payments, while the sub-$1 million view may better reflect broader underlying payment activity.
+
+4. Which specific dental manufacturers or suppliers hold the highest financial market share of provider incentives, and how do dental sector payment trends, vendor concentration, and provider engagement compare to the broader medical market?
+
+  - The top manufacturers/GPO spenders were Align Technologies at $23.7 million, followed by Straumann USA at $8.22 million. The dental sector is a relatively small segment of the broader medical market, which explains the substantially lower scale of spending compared with the largest healthcare manufacturers/GPOs. Notably, no dental-related payment exceeded $1 million, suggesting that spending by dental manufacturers is more likely to be distributed across smaller, provider-level engagements with individual dentists rather than concentrated in large institutional payments, research grants, or other high-value transactions.
+
+5. Is there a higher ratio of non-cash (benefits-in-kind) vs. direct cash compensation in the dental field compared to general medicine?
+
+  - 

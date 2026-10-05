@@ -191,6 +191,7 @@ A Streamlit dashboard app is created from the three specialized marts to visuali
 
   - BioNTech SE and ABBVIE INC. ranked first and second in total 2025 payment amounts, but the rankings change substantially when $1 million payments are excluded. BioNTech SE’s position is largely driven by the single $400 million payment, which accounts for the majority of its Open Payments spending and drops it outside the top 10 when payments above $1 million are removed. ABBVIE INC., by contrast, ranks first among payments below $1 million. This suggests that headline manufacturer/GPO rankings are heavily influenced by a small number of mega-payments, while the sub-$1 million view may better reflect broader underlying payment activity.
 
+### Dental Questions
 4. Which specific dental manufacturers or suppliers have the highest spending, and how do dental sector payment trends, vendor concentration, and provider engagement compare to the broader medical market?
 
   - The top manufacturers/GPO spenders were Align Technologies at $23.7 million, followed by Straumann USA at $8.22 million. The dental sector is a relatively small segment of the broader medical market, which explains the substantially lower scale of spending compared with the largest healthcare manufacturers/GPOs. Notably, no dental-related payment exceeded $1 million, suggesting that spending by dental manufacturers is more likely to be distributed across smaller, provider-level engagements rather than concentrated in large institutional payments, research grants, or other high-value transactions.

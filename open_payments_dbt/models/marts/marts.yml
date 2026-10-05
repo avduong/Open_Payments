@@ -17,7 +17,7 @@ models:
         tests:
           - not_null
 
-  - name: mart_seasonal_payments
+  - name: mart_payment_aggregates
     description: >
       Answers questions about structural cycles, seasonality, and how payment attributes differ.
 
@@ -34,4 +34,14 @@ models:
     columns:
       - name: recipient_profile_id
         description: "The primary key of this mart representing a unique provider."
+    columns: 
+      - name: in_kind_ratio
+      - description: >
+          Because the Open Payments dataset does not provide a single field categorizing payments 
+          as “cash compensation” versus “benefits-in-kind,” for the purposes of this analysis, 
+          payment nature categories were grouped into analytical classifications. 
+          Travel and Lodging, Food and Beverage, Gift, and Entertainment were classified as benefits-in-kind, 
+          while Consulting Fee, Honoraria, Compensation for services other than consulting, and Speaker Fee 
+          were classified as direct cash compensation. These groupings are analytical definitions used for 
+          comparison and do not represent an official CMS classification.
       

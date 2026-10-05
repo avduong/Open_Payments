@@ -18,7 +18,6 @@ with profile_aggregation as (
         count(*) as total_payment_volume,
         count(distinct manufacturer_gpo_name) as unique_vendors_engaged,
         
-        -- Segmenting values for Ultimate Question calculation
         sum(case 
             when payment_nature in ('Travel and Lodging', 'Food and Beverage', 'Gift', 'Entertainment') 
             then payment_amount_usd else 0 
